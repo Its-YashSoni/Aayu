@@ -202,7 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               SizedBox(height: 10),
-              Text(post['plantdescription']),
+              Expanded(child: SingleChildScrollView(child: Text(post['plantdescription']))),
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
