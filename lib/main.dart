@@ -20,8 +20,11 @@ void main() async {
   }catch(e){
     print("Connection Failed $e");
   }
+
   runApp(MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   @override

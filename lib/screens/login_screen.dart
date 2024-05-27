@@ -1,10 +1,19 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'screen_builder.dart';
 
+Future<void> _requestPermissions() async {
+  await [
+    Permission.camera,
+    Permission.storage,
+    Permission.location,
+  ].request();
+}
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -17,11 +26,27 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  bool isGuest = false;
+
+  @override
+  void initState(){
+    super.initState();
+    _checkPermissions();
+  }
+
+  Future<void> _checkPermissions() async {
+    await _requestPermissions();
+  }
+
+
 
   Future<void> _signInWithGoogle() async {
     setState(() {
+      isGuest = false;
       _isLoading = true;
     });
+
+
 
     try {
       // Sign in with Google
@@ -52,6 +77,7 @@ class _LoginPageState extends State<LoginPage> {
           'photoURL': user.photoURL,
           'lastSignInTime': user.metadata.lastSignInTime,
           'creationTime': user.metadata.creationTime,
+          'likes': 0
         });
       }
 
@@ -74,10 +100,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _continueAsGuest() async {
     setState(() {
+      isGuest = true;
       _isLoading = true;
     });
 
-    await Future.delayed(Duration(seconds: 2));
+
+    await Future.delayed(Duration(seconds: 4));
 
     setState(() {
       _isLoading = false;
@@ -91,16 +119,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: Lottie.asset(isGuest ? 'assets/guest.json' :'assets/google.json', width: MediaQuery.of(context).size.width*0.4))
           : Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Lottie.asset('assets/login.json'),
+          Lottie.asset('assets/loading.json'),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Container(
             width: MediaQuery.of(context).size.width * 0.7,

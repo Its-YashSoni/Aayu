@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PlantInfoPage extends StatelessWidget {
   final String plantName;
@@ -20,8 +19,6 @@ class PlantInfoPage extends StatelessWidget {
     );
   }
 }
-
-
 
 class PlantInfoItem extends StatelessWidget {
   final Map<String, dynamic> plantData;

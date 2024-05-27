@@ -1,21 +1,20 @@
 import 'dart:io';
-import 'package:ayu/screens/classification.dart';
-import 'package:ayu/screens/login_screen.dart';
-import 'package:ayu/screens/profile.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'Home.dart';
 import 'community.dart';
 import 'package:ayu/constraints.dart';
 import 'package:tflite_v2/tflite_v2.dart';
+import 'about.dart';
+import 'classification.dart';
+import 'login_screen.dart';
+import 'profile.dart';
 
 class ScreenBuilder extends StatefulWidget {
   final bool isGuest;
-
   ScreenBuilder({required this.isGuest});
 
   @override
@@ -42,47 +41,44 @@ class _ScreenBuilderState extends State<ScreenBuilder> {
       ),
       Community(isGuest: widget.isGuest),
     ];
-    loadmodel().then((value){
+    loadmodel().then((value) {
       setState(() {});
     });
-
   }
 
-  loadmodel() async{
-    try{
+
+  loadmodel() async {
+    try {
       await Tflite.loadModel(
-          model: "assets/model_unquant.tflite",
-          labels: "assets/labels.txt");
+          model: "assets/model(updated).tflite",
+          labels: "assets/labels(updated).txt");
       print("Model Loaded Successfully");
-    }catch(e){
+    } catch (e) {
       print("Error loading model: $e");
     }
-
   }
-
 
   @override
   void dispose() {
+
     super.dispose();
   }
 
   final ImagePicker _picker = ImagePicker();
 
-
-  Future<void> _classifyImage(File image) async{
+  Future<void> _classifyImage(File image) async {
     setState(() {
       isloading = true;
     });
     int startTime = new DateTime.now().millisecondsSinceEpoch;
-    try{
+    try {
       var recognitions = await Tflite.runModelOnImage(
           path: image.path,
           numResults: 6,
           threshold: 0.05,
           imageMean: 127.5,
-          imageStd: 127.5
-      );
-      if (recognitions != null && recognitions.isNotEmpty){
+          imageStd: 127.5);
+      if (recognitions != null && recognitions.isNotEmpty) {
         setState(() {
           _recognitions = recognitions;
           v = recognitions.toString();
@@ -95,15 +91,38 @@ class _ScreenBuilderState extends State<ScreenBuilder> {
         setState(() {
           isloading = false;
         });
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ClassificationScreen(predictions: _recognitions),));
+        if (_recognitions[0]['label'] == 'Unknown') {
+          // Show dialog
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Unknown Detected'),
+                content: Text('Model upgrade in progress'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                ClassificationScreen(predictions: _recognitions),
+          ));
+        }
       }
-    }catch(e){
+    } catch (e) {
       setState(() {
         isloading = false;
       });
       print("error classifying image: $e");
     }
-
   }
 
   void _showPicker(BuildContext context) {
@@ -126,8 +145,8 @@ class _ScreenBuilderState extends State<ScreenBuilder> {
                 leading: Icon(Icons.photo_camera),
                 title: Text('Camera'),
                 onTap: () {
-                  _imgFromCamera();
                   Navigator.of(context).pop();
+                  _imgFromCamera();
                 },
               ),
             ],
@@ -162,8 +181,6 @@ class _ScreenBuilderState extends State<ScreenBuilder> {
       await _classifyImage(File(_image));
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -264,13 +281,16 @@ class _ScreenBuilderState extends State<ScreenBuilder> {
           ],
         ),
       ),
-      body: isloading ? Center(child: CircularProgressIndicator()) : screens[index],
+      body: isloading
+          ? Center(child: Lottie.asset('assets/loading.json'))
+          : screens[index],
     );
   }
 }
 
 class DrawerScreen extends StatefulWidget {
   final bool isGuest;
+
   DrawerScreen({required this.isGuest});
 
   @override
@@ -322,7 +342,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       ),
                     ),
                     Text(
-                      widget.isGuest || user == null ? "not Required" : "${user!.email}",
+                      widget.isGuest || user == null
+                          ? "not Required"
+                          : "${user!.email}",
                       style: TextStyle(color: Colors.white),
                     )
                   ],
@@ -340,7 +362,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
               } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePage(userId: user!.uid)),
+                  MaterialPageRoute(
+                      builder: (context) => ProfilePage(userId: user!.uid)),
                 );
               }
             },
@@ -352,6 +375,35 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   Icon(Icons.person),
                   Text(
                     "Profile",
+                    style: GoogleFonts.poppins(
+                      textStyle:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                  Icon(Icons.arrow_forward_ios, color: Colors.black26)
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AboutScreen(),
+                  ));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.info),
+                  Text(
+                    "About",
                     style: GoogleFonts.poppins(
                       textStyle:
                           TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
@@ -389,6 +441,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   )
                 ],
               ),
+            ),
+          ),
+          Expanded(child: SizedBox()),
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Text(
+              "@Designed & Developed by Team Aayu",
+              style:
+                  TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 12),
             ),
           )
         ],

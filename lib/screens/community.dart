@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icons_flutter/icons_flutter.dart';
 import 'package:ayu/screens/screen_builder.dart';
+import 'package:lottie/lottie.dart';
 
 class User {
   final String id;
@@ -59,7 +59,6 @@ class Community extends StatefulWidget {
 }
 
 class _CommunityState extends State<Community> {
-
   bool __isLoading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -75,7 +74,8 @@ class _CommunityState extends State<Community> {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       // Obtain the authentication details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -84,11 +84,13 @@ class _CommunityState extends State<Community> {
       );
 
       // Sign in to Firebase with the Google credential
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
       var user = userCredential.user;
 
       // Check if the user already exists in Firestore
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user!.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(user!.uid).get();
 
       if (!userDoc.exists) {
         // User does not exist, create a new record
@@ -119,11 +121,9 @@ class _CommunityState extends State<Community> {
     }
   }
 
-
   final CollectionReference _postsCollection =
       FirebaseFirestore.instance.collection('posts');
-  bool _isLoading = true;
-  String? _errorMessage;
+
 
   @override
   void initState() {
@@ -132,98 +132,103 @@ class _CommunityState extends State<Community> {
 
   @override
   Widget build(BuildContext context) {
-    return __isLoading ?  Center(child: CircularProgressIndicator()) :Padding(
-      padding: const EdgeInsets.only(top: 12, left: 20.0, right: 20.0),
-      child: widget.isGuest
-          ? Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: ElevatedButton(
-                  onPressed: _signInWithGoogle,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Image.asset('assets/google.png',
-                          width: MediaQuery.of(context).size.width * 0.1),
-                      Text("Sign In with Google"),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SafeArea(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Community",
-                            style: GoogleFonts.ptSerif(
-                              textStyle: TextStyle(fontSize: 28),
-                            ),
-                          ),
-                          Text(
-                            "Uniting for Herbal Wisdom and Wellness",
-                            style: GoogleFonts.ptSerif(
-                              textStyle: TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        ],
+    return __isLoading
+        ? Center(child: Lottie.asset('assets/loading.json'))
+        : Padding(
+            padding: const EdgeInsets.only(top: 12, left: 20.0, right: 20.0),
+            child: widget.isGuest
+                ? Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: ElevatedButton(
+                        onPressed: _signInWithGoogle,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Image.asset('assets/google.png',
+                                width: MediaQuery.of(context).size.width * 0.1),
+                            Text("Sign In with Google"),
+                          ],
+                        ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UploadScreen(),
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SafeArea(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Community",
+                                  style: GoogleFonts.ptSerif(
+                                    textStyle: TextStyle(fontSize: 28),
+                                  ),
+                                ),
+                                Text(
+                                  "Uniting for Herbal Wisdom and Wellness",
+                                  style: GoogleFonts.ptSerif(
+                                    textStyle: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                        child: Icon(
-                          Icons.add_box_outlined,
-                          size: MediaQuery.of(context).size.width * 0.09,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UploadScreen(),
+                                  ),
+                                );
+                              },
+                              child: Icon(
+                                Icons.add_box_outlined,
+                                size: MediaQuery.of(context).size.width * 0.09,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                      Expanded(
+                        child: StreamBuilder(
+                          stream: _postsCollection.snapshots(),
+                          builder:
+                              (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            }
+                            if (snapshot.data!.docs.isEmpty) {
+                              return Center(child: Text('No posts available'));
+                            }
+                            List<User> users = snapshot.data!.docs
+                                .map((doc) => User.fromFirestore(doc))
+                                .toList();
+                            return ListView.builder(
+                              itemCount: users.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: PostItem(user: users[index]),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ),
                     ],
                   ),
-                ),
-                Divider(),
-                Expanded(
-                  child: StreamBuilder(
-                    stream: _postsCollection.snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      }
-                      if (snapshot.data!.docs.isEmpty) {
-                        return Center(child: Text('No posts available'));
-                      }
-                      List<User> users = snapshot.data!.docs
-                          .map((doc) => User.fromFirestore(doc))
-                          .toList();
-                      return ListView.builder(
-                        itemCount: users.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: PostItem(user: users[index]),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-    );
+          );
   }
 }
 
@@ -238,6 +243,7 @@ class PostItem extends StatefulWidget {
 
 class _PostItemState extends State<PostItem> {
   bool isExpanded = false;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   void toggleLike() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -264,125 +270,135 @@ class _PostItemState extends State<PostItem> {
     }
   }
 
-
   void openComments() {
     TextEditingController _commentController = TextEditingController();
-
     showModalBottomSheet(
       context: context,
+      useSafeArea: true,
+      enableDrag: true,
+      isScrollControlled: true,
       builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Comments',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+        return Padding(
+          padding:  EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Comments',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Expanded(
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('comments')
-                      .where('postId', isEqualTo: widget.user.id)
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Center(
-                          child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(
-                          child: Text('Error: ${snapshot.error}'));
-                    }
-                    if (snapshot.data!.docs.isEmpty) {
-                      return Center(child: Text('No comments yet'));
-                    }
-                    return Expanded(
-                      child: ListView.builder(
+                SizedBox(height: 10),
+                Expanded(
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('comments')
+                        .where('postId', isEqualTo: widget.user.id)
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }
+                      if (snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text('No comments yet'));
+                      }
+                      return ListView.builder(
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var commentData =
-                          snapshot.data!.docs[index].data()
-                          as Map<String, dynamic>;
+                          var commentData = snapshot.data!.docs[index].data()
+                              as Map<String, dynamic>;
                           // commentData['text']
                           // commentData['user']
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: NetworkImage('${commentData['profileImg']}',),
+                              backgroundImage:
+                                  NetworkImage('${commentData['profileImg']}'),
                             ),
-                            title: Text(commentData['text'], style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600
-                            ),),
-                            subtitle: Text('Comment by: ${commentData['user']}', style: TextStyle(
-                              fontSize: 9
-                            ),),
+                            title: Text(
+                              commentData['text'],
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Text(
+                              'Comment by: ${commentData['user']}',
+                              style: TextStyle(fontSize: 9),
+                            ),
                           );
                         },
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _commentController,
-                      decoration: InputDecoration(
-                        hintText: 'Add a comment...',
-                        border: OutlineInputBorder(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _commentController,
+                        decoration: InputDecoration(
+                          hintText: 'Add a comment...',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final user = FirebaseAuth.instance.currentUser;
-                      if (user != null) {
-                        String commentText = _commentController.text;
-                        if (commentText.isNotEmpty) {
-                          await FirebaseFirestore.instance
-                              .collection('comments')
-                              .add({
-                            'postId': widget.user.id,
-                            'text': commentText,
-                            'profileImg' : widget.user.image,
-                            'user': user.displayName ?? 'Anonymous',
-                            'timestamp' : DateTime.timestamp()
-                          });
-                          // Update comments count in the 'posts' collection
-                          await FirebaseFirestore.instance
-                              .collection('posts')
-                              .doc(widget.user.id)
-                              .update({
-                            'comments': FieldValue.increment(1),
-                          });
-                          _commentController.clear();
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          )),
+                      onPressed: () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          String commentText = _commentController.text;
+                          if (commentText.isNotEmpty) {
+                            await FirebaseFirestore.instance
+                                .collection('comments')
+                                .add({
+                              'postId': widget.user.id,
+                              'text': commentText,
+                              'profileImg': currentUser!.photoURL,
+                              'user': user.displayName ?? 'Anonymous',
+                              'timestamp': FieldValue.serverTimestamp()
+                            });
+                            // Update comments count in the 'posts' collection
+                            await FirebaseFirestore.instance
+                                .collection('posts')
+                                .doc(widget.user.id)
+                                .update({
+                              'comments': FieldValue.increment(1),
+                            });
+                            _commentController.clear();
+                          }
+                        } else {
+                          // Handle the case when the user is not authenticated
                         }
-                      } else {
-                        // Handle the case when the user is not authenticated
-                      }
-                    },
-                    child: Text('Comment'),
-                  ),
-                ],
-              ),
-            ],
+                      },
+                      child: Text(
+                        'Comment',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -578,7 +594,8 @@ class _UploadScreenState extends State<UploadScreen> {
       final user = FirebaseAuth.instance.currentUser;
 
       // Add the post data without the postId
-      DocumentReference postRef = await FirebaseFirestore.instance.collection('posts').add({
+      DocumentReference postRef =
+          await FirebaseFirestore.instance.collection('posts').add({
         'name': user?.displayName ?? 'Anonymous',
         'image': user?.photoURL ?? '',
         'plantname': _nameController.text,
@@ -617,159 +634,161 @@ class _UploadScreenState extends State<UploadScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isUploading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_back,
-                          size: 25,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.04,
-                        ),
-                        Text(
-                          "Back",
-                          style: GoogleFonts.ptSerif(
-                            textStyle: TextStyle(fontSize: 20),
+      body: _isUploading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.arrow_back,
+                                size: 25,
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.04,
+                              ),
+                              Text(
+                                "Back",
+                                style: GoogleFonts.ptSerif(
+                                  textStyle: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: getImage,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: _image != null
-                            ? FileImage(_image!)
-                            : NetworkImage(
-                                '',
-                              ) as ImageProvider,
                       ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 2,
-                          spreadRadius: 0.5,
-                        ),
-                      ],
                     ),
-                    child: _image == null
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.camera_alt),
-                                Text(
-                                  'Tap to select an image',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: getImage,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: _image != null
+                                  ? FileImage(_image!)
+                                  : NetworkImage(
+                                      '',
+                                    ) as ImageProvider,
                             ),
-                          )
-                        : null,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: EdgeInsets.only(left: 8.0),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: TextFormField(
-                    controller: _nameController,
-                    textCapitalization: TextCapitalization.words,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                      letterSpacing: 1,
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 2,
+                                spreadRadius: 0.5,
+                              ),
+                            ],
+                          ),
+                          child: _image == null
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.camera_alt),
+                                      Text(
+                                        'Tap to select an image',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : null,
+                        ),
+                      ),
                     ),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      hintText: "Plant Name",
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: EdgeInsets.only(left: 8.0),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: TextFormField(
+                          controller: _nameController,
+                          textCapitalization: TextCapitalization.words,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                            letterSpacing: 1,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            hintText: "Plant Name",
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: EdgeInsets.only(left: 8.0),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: TextFormField(
-                    controller: _descriptionController,
-                    textCapitalization: TextCapitalization.sentences,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: EdgeInsets.only(left: 8.0),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: TextFormField(
+                          controller: _descriptionController,
+                          textCapitalization: TextCapitalization.sentences,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                          maxLines: 6,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            hintText: "Description",
+                          ),
+                        ),
+                      ),
                     ),
-                    maxLines: 6,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      hintText: "Description",
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: uploadPost,
-                  child: Text(
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: uploadPost,
+                        child: Text(
                           "Upload",
                           style: GoogleFonts.ptSerif(
                             textStyle:
                                 TextStyle(fontSize: 15, color: Colors.white),
                           ),
                         ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

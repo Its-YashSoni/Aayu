@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ayu/screens/plantinfo.dart';
+import 'package:lottie/lottie.dart';
 
 class ViewAll extends StatefulWidget {
   const ViewAll({Key? key}) : super(key: key);
@@ -74,7 +75,7 @@ class _ViewAllState extends State<ViewAll> {
         backgroundColor: Colors.black, // Change color as needed
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: Lottie.asset('assets/loading.json'))
           : Column(
         children: [
           Expanded(

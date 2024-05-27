@@ -16,7 +16,6 @@ class _ProfilePageState extends State<ProfilePage> {
   late String _name;
   late String _email;
   late String _profilePicUrl;
-  late int _totalLikes = 0;
   late List<Map<String, dynamic>> _posts = [];
   bool _isLoading = true;
 
@@ -85,53 +84,71 @@ class _ProfilePageState extends State<ProfilePage> {
             _email,
             style: TextStyle(fontSize: 16),
           ),
-          SizedBox(height: 10),
-          Text(
-            'Total Likes: $_totalLikes',
-            style: TextStyle(fontSize: 16),
-          ),
+
           SizedBox(height: 20),
-          Text(
-            'Posts',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
           Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1 / 1,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                color: Colors.teal,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    offset: Offset(0, 0),
+                    spreadRadius: 1,
+                    blurRadius: 5
+                  )
+                ]
               ),
-              itemCount: _posts.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    _showPostDialog(context, _posts[index]);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage('${_posts[index]['plantimage']}'),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 3,
-                            spreadRadius: 1,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
+              child: Column(
+                children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                Text(
+                  'Posts',
+                  style: TextStyle(color: Colors.white,fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1 / 1,
                     ),
+                    itemCount: _posts.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          _showPostDialog(context, _posts[index]);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage('${_posts[index]['plantimage']}'),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 3,
+                                  spreadRadius: 1,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ],),
             ),
-          ),
+          )
+
         ],
       ),
     );

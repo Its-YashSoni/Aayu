@@ -37,10 +37,9 @@ class _HomeState extends State<Home> {
   void determineTimeOfDay() {
     DateTime now = DateTime.now();
     int hour = now.hour;
-
     // Assuming day time is between 6:00 AM and 6:00 PM
     setState(() {
-      isDay = (hour >= 6 && hour < 18);
+      isDay = (hour >= 6 && hour < 20);
     });
   }
 

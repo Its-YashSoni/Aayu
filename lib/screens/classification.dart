@@ -16,7 +16,6 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
   Map<String, dynamic>? _plantDetails;
 
 
-
   @override
   void initState() {
     super.initState();
@@ -70,7 +69,7 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${widget.predictions[0]['label']}',
+                      '${widget.predictions[0]['label']??""}',
                       style: GoogleFonts.ptSerif(
                         textStyle: TextStyle(
                           fontSize: 25,
@@ -78,10 +77,10 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
                         ),
                       ),
                     ),
-                    Text("Scientific Name"),
+                    Text("${_plantDetails?['scientific_name']??""}"),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     Text(
-                      "${"Confidence Score:"}\t\t${(widget.predictions[0]['confidence'] * 100).toStringAsFixed(2)} %",
+                      "${"Confidence Score:"}\t\t${(widget.predictions[0]['confidence'] * 100).toStringAsFixed(2)??""} %",
                       style: GoogleFonts.ptSerif(
                         textStyle: TextStyle(
                           fontSize: 12,
@@ -93,7 +92,7 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
                 CircleAvatar(
                   radius: MediaQuery.of(context).size.width * 0.12,
                   backgroundImage: _plantDetails != null
-                      ? NetworkImage('${_plantDetails!['plantimg']}')
+                      ? NetworkImage('${_plantDetails?['plantimg']??""}')
                       : null,
                 ),
               ],
@@ -129,7 +128,7 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
                                 children: [
                                   Text(
                                     textAlign: TextAlign.justify,
-                                    '${_plantDetails!['plantdescription']}',
+                                    '${_plantDetails?['plantdescription']??""}',
                                     style: GoogleFonts.ptSerif(
                                       textStyle: TextStyle(
                                         color: Colors.white,
@@ -162,17 +161,17 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
                         ),
                         SizedBox(height: 10),
                         _plantDetails != null &&
-                                _plantDetails!['healthbenifits'] != null
+                                _plantDetails?['healthbenifits'] != null
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: List.generate(
-                                  _plantDetails!['healthbenifits'].length,
+                                  _plantDetails?['healthbenifits'].length,
                                   (index) => Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '\u2022 ${_plantDetails!['healthbenifits'][index]}',
+                                        '\u2022 ${_plantDetails?['healthbenifits'][index]??""}',
                                         textAlign: TextAlign.justify,
                                         style: GoogleFonts.ptSerif(
                                           textStyle: TextStyle(
@@ -240,6 +239,5 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
       ),
     ).then((String? value) {});
   }
-
 
 }
