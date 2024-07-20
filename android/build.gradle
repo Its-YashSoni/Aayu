@@ -5,6 +5,12 @@ buildscript {
         mavenCentral()
     }
 
+    ext {
+        compileSdkVersion = 33
+        minSdkVersion = 23 // or higher if required by plugins
+        targetSdkVersion = 33
+    }
+
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.4.1'

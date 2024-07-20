@@ -104,6 +104,8 @@ class AboutScreen extends StatelessWidget {
                       context, 'assets/noshaba-min.JPG', 'Noshaba Khan'),
                   _buildContributorTile(
                       context, 'assets/ritesh-min.JPG', 'Ritesh Bobade'),
+                  _buildContributorTile(
+                      context, 'assets/ayush.png', 'Ayush Dewang'),
                 ],
               ),
               SizedBox(height: 50),

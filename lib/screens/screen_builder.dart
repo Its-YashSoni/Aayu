@@ -325,8 +325,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 CircleAvatar(
                   radius: MediaQuery.of(context).size.width * 0.1,
                   backgroundImage: widget.isGuest || user == null
-                      ? AssetImage('assets/logo.png')
-                      : NetworkImage('${user!.photoURL}'),
+                      ? AssetImage('assets/logo.png') as ImageProvider<Object>?
+                      : NetworkImage('${user!.photoURL}') as ImageProvider<Object>?,
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
