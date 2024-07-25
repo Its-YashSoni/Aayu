@@ -1,4 +1,4 @@
-To arrange the images in a grid with 4 images per row, you can use HTML within your Markdown file. Here is the updated README:
+To change the link color from blue to `Color(0xff426D51)`, you can use inline CSS in your Markdown file. Here's the updated README:
 
 # Aayu - Medicinal Plant Identification App
 
@@ -88,25 +88,30 @@ We would like to extend our thanks to the following contributors:
 
 Here are some screenshots of Aayu in action:
 
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-  <img src="screenshots/s0.jpg" alt="Splash Screen" width="23%">
-  <img src="screenshots/s1.jpg" alt="Login Screen" width="23%">
-  <img src="screenshots/s2.jpg" alt="SignUp Screen" width="23%">
-  <img src="screenshots/s3.jpg" alt="Home Screen" width="23%">
-  <img src="screenshots/s4.jpg" alt="Selection Screen" width="23%">
-  <img src="screenshots/s5.jpg" alt="Home Screen Bottom" width="23%">
-  <img src="screenshots/s6.jpg" alt="Drawer Screen" width="23%">
-  <img src="screenshots/s7.jpg" alt="Weather Screen" width="23%">
-  <img src="screenshots/s8.jpg" alt="Featured Plants Details" width="23%">
-  <img src="screenshots/s9.jpg" alt="Classified image details" width="23%">
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="screenshots/s0.jpg" alt="Splash Screen" width="18%">
+  <img src="screenshots/s1.jpg" alt="Login Screen" width="18%">
+  <img src="screenshots/s2.jpg" alt="SignUp Screen" width="18%">
+  <img src="screenshots/s3.jpg" alt="Home Screen" width="18%">
+  <img src="screenshots/s4.jpg" alt="Selection Screen" width="18%">
+  <img src="screenshots/s5.jpg" alt="Home Screen Bottom" width="18%">
+  <img src="screenshots/s6.jpg" alt="Drawer Screen" width="18%">
+  <img src="screenshots/s7.jpg" alt="Weather Screen" width="18%">
+  <img src="screenshots/s8.jpg" alt="Featured Plants Details" width="18%">
+  <img src="screenshots/s9.jpg" alt="Classified image details" width="18%">
 </div>
 
 ## Video Demo
 
 Check out our video demo to see Aayu in action:
 
-[![Aayu Demo](screenshots_and_demo/screenrecoding.mp4)](screenshots_and_demo/screenrecoding.mp4)
+[![Aayu Demo](screenshots/screenrecording.mp4)](screenshots/screenrecording.mp4)
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+<style>
+  a {
+    color: #426D51;
+  }
+</style>
