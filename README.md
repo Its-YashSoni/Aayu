@@ -1,5 +1,3 @@
-To change the link color from blue to `Color(0xff426D51)`, you can use inline CSS in your Markdown file. Here's the updated README:
-
 # Aayu - Medicinal Plant Identification App
 
 **Version:** 2.0  
