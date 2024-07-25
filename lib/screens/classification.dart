@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:ayu/screens/homepage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,8 +8,9 @@ import 'package:flutter/cupertino.dart';
 
 class ClassificationScreen extends StatefulWidget {
   final List<dynamic> predictions;
-
-  ClassificationScreen({required this.predictions, Key? key}) : super(key: key);
+  final File image;
+  final bool isGuest;
+  ClassificationScreen({required this.predictions, required this.image , required this.isGuest , Key? key}) : super(key: key);
 
   @override
   State<ClassificationScreen> createState() => _ClassificationScreenState();
@@ -47,161 +51,210 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            InkWell(
-              onTap: () => _onActionSheetPress(context),
-              child: Icon(Icons.translate),
+
+      body: Column(
+        children: [
+
+          Stack(
+            children:[
+              Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height*0.4,
+              decoration: BoxDecoration(
+                image: DecorationImage(image: FileImage(widget.image), fit: BoxFit.fill),
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30)
+                )
+              ),
             ),
-          ],
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height*0.4,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.black, Colors.transparent],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter
+                    ),
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(30)
+                    )
+                ),
+              ),
+
+              SafeArea(child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(isGuest: false),)),
+                      child: Icon(Icons.arrow_back_outlined, color: Colors.white,),
+                    ),
+                    InkWell(
+                      onTap: () => _onActionSheetPress(context),
+                      child: Icon(Icons.translate, color: Colors.white,),
+                    ),
+                  ],
+                ),
+              ), )
+          ]),
+
+          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+          
+          Expanded(
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+
                   children: [
                     Text(
-                      '${widget.predictions[0]['label']??""}',
-                      style: GoogleFonts.ptSerif(
+                      '${widget.predictions[0]['label'].toString().toUpperCase() ?? ""}',
+                      style: GoogleFonts.poppins(
                         textStyle: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w900,
+                          fontSize: MediaQuery.of(context).textScaleFactor *30 ,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    Text("${_plantDetails?['scientific_name']??""}"),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                    Text(
-                      "${"Confidence Score:"}\t\t${(widget.predictions[0]['confidence'] * 100).toStringAsFixed(2)??""} %",
-                      style: GoogleFonts.ptSerif(
-                        textStyle: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                CircleAvatar(
-                  radius: MediaQuery.of(context).size.width * 0.12,
-                  backgroundImage: _plantDetails != null
-                      ? NetworkImage('${_plantDetails?['plantimg']??""}')
-                      : null,
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-            Expanded(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(35),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                        "Plant Description",
-                          style: GoogleFonts.ptSerif(
-                            textStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        _plantDetails != null
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    textAlign: TextAlign.justify,
-                                    '${_plantDetails?['plantdescription']??""}',
-                                    style: GoogleFonts.ptSerif(
-                                      textStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Text(
-                                'Loading plant details...',
-                                style: GoogleFonts.ptSerif(
-                                  textStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
+                    Text("${_plantDetails?['scientific_name']??""}", style: GoogleFonts.poppins(
+                      fontSize: MediaQuery.of(context).textScaleFactor * 15
+                    ),),
+                
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                            "Plant Description",
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: MediaQuery.of(context).textScaleFactor *20,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.05),
-                        Text(
-                          "Health Benefits",
-                          style: GoogleFonts.ptSerif(
-                            textStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
                             ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        _plantDetails != null &&
-                                _plantDetails?['healthbenifits'] != null
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                  _plantDetails?['healthbenifits'].length,
-                                  (index) => Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                            _plantDetails != null
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '\u2022 ${_plantDetails?['healthbenifits'][index]??""}',
                                         textAlign: TextAlign.justify,
-                                        style: GoogleFonts.ptSerif(
+                                        '${_plantDetails?['plantdescription']??""}',
+                                        style: GoogleFonts.poppins(
                                           textStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
+                                            color: Colors.black,
+                                            fontSize: MediaQuery.of(context).textScaleFactor * 13,
+                                            fontWeight: FontWeight.w300
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: 5),
                                     ],
+                                  )
+                                : Text(
+                                    'Loading plant details...',
+                                    style: GoogleFonts.ptSerif(
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              )
-                            : Text(
-                                    'Loading Health Benefits...',
-                                style: GoogleFonts.ptSerif(
-                                  textStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.05),
+                            Text(
+                              "Health Benefits",
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: MediaQuery.of(context).textScaleFactor *20,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
-                      ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                            _plantDetails != null &&
+                                    _plantDetails?['healthbenifits'] != null
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: List.generate(
+                                      _plantDetails?['healthbenifits'].length,
+                                      (index) => Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '\u2022 ${_plantDetails?['healthbenifits'][index]??""}',
+                                            textAlign: TextAlign.justify,
+                                            style: GoogleFonts.poppins(
+                                              textStyle: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: MediaQuery.of(context).textScaleFactor * 13,
+                                                  fontWeight: FontWeight.w300
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                        'Loading Health Benefits...',
+                                    style: GoogleFonts.ptSerif(
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.05),
+
+                            Text(
+                              "Note",
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: MediaQuery.of(context).textScaleFactor *20,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                            Text(
+                              "According to our model we are ${(widget.predictions[0]['confidence'] * 100).toStringAsFixed(2)} % Confident the Predicted image is ${widget.predictions[0]['label'].toString()}",
+                              textAlign: TextAlign.justify,
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: MediaQuery.of(context).textScaleFactor * 13,
+                                    fontWeight: FontWeight.w300
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
