@@ -1,3 +1,5 @@
+To arrange the images in a grid with 4 images per row, you can use HTML within your Markdown file. Here is the updated README:
+
 # Aayu - Medicinal Plant Identification App
 
 **Version:** 2.0  
@@ -76,7 +78,7 @@ Once you have the app installed, you can:
 We would like to extend our thanks to the following contributors:
 
 - [Yash Soni](https://github.com/Its-YashSoni)
-- [Ayush Dewag](https://github.com/ayushdewang)
+- [Ayush Dewang](https://github.com/ayushdewang)
 - [Krishna Jhala](https://github.com/krishna-jhala)
 - [Noshaba Khan](https://github.com/Noshaba-khan)
 - [Ritesh Bobade](https://github.com/ritesh6262)
@@ -86,16 +88,18 @@ We would like to extend our thanks to the following contributors:
 
 Here are some screenshots of Aayu in action:
 
-![Splash Screen](screenshots/s0.jpg)
-![Login Screen](screenshots/s1.jpg)
-![SignUp Screen](screenshots/s2.jpg)
-![Home Screen](screenshots/s3.jpg)
-![Selection Screen](screenshots/s4.jpg)
-![Home Screen Bottom](screenshots/s5.jpg)
-![Drawer Screen](screenshots/s6.jpg)
-![Weather Screen](screenshots/s7.jpg)
-![Featured Plants Details](screenshots/s8.jpg)
-![Classified image details](screenshots/s9.jpg)
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+  <img src="screenshots/s0.jpg" alt="Splash Screen" width="23%">
+  <img src="screenshots/s1.jpg" alt="Login Screen" width="23%">
+  <img src="screenshots/s2.jpg" alt="SignUp Screen" width="23%">
+  <img src="screenshots/s3.jpg" alt="Home Screen" width="23%">
+  <img src="screenshots/s4.jpg" alt="Selection Screen" width="23%">
+  <img src="screenshots/s5.jpg" alt="Home Screen Bottom" width="23%">
+  <img src="screenshots/s6.jpg" alt="Drawer Screen" width="23%">
+  <img src="screenshots/s7.jpg" alt="Weather Screen" width="23%">
+  <img src="screenshots/s8.jpg" alt="Featured Plants Details" width="23%">
+  <img src="screenshots/s9.jpg" alt="Classified image details" width="23%">
+</div>
 
 ## Video Demo
 
