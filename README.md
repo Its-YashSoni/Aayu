@@ -93,7 +93,7 @@ Here are some screenshots of Aayu in action:
 
 Check out our video demo to see Aayu in action:
 
-[![Aayu Demo](screenshots/screenrecording.mp4)](screenshots/screenrecording.gif)
+[![Animated GIF of your app](screenshots/screenrecording.gif)](screenshots/screenrecording.gif)
 
 ## Contributors
 
