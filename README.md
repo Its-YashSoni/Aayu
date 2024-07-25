@@ -75,12 +75,16 @@ Once you have the app installed, you can:
 
 We would like to extend our thanks to the following contributors:
 
-- [Yash Soni](https://github.com/Its-YashSoni)
-- [Ayush Dewang](https://github.com/ayushdewang)
-- [Krishna Jhala](https://github.com/krishna-jhala)
-- [Noshaba Khan](https://github.com/Noshaba-khan)
-- [Ritesh Bobade](https://github.com/ritesh6262)
-- [Pooja Baghel](https://github.com/poojabaghel0604)
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Its-YashSoni"><img src="https://avatars.githubusercontent.com/Its-YashSoni" width="100px;" alt="Yash Soni"/><br /><sub><b>Yash Soni</b></sub></a></td>
+    <td align="center"><a href="https://github.com/ayushdewang"><img src="https://avatars.githubusercontent.com/ayushdewang" width="100px;" alt="Ayush Dewang"/><br /><sub><b>Ayush Dewang</b></sub></a></td>
+    <td align="center"><a href="https://github.com/krishna-jhala"><img src="https://avatars.githubusercontent.com/krishna-jhala" width="100px;" alt="Krishna Jhala"/><br /><sub><b>Krishna Jhala</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Noshaba-khan"><img src="https://avatars.githubusercontent.com/Noshaba-khan" width="100px;" alt="Noshaba Khan"/><br /><sub><b>Noshaba Khan</b></sub></a></td>
+    <td align="center"><a href="https://github.com/ritesh6262"><img src="https://avatars.githubusercontent.com/ritesh6262" width="100px;" alt="Ritesh Bobade"/><br /><sub><b>Ritesh Bobade</b></sub></a></td>
+    <td align="center"><a href="https://github.com/poojabaghel0604"><img src="https://avatars.githubusercontent.com/poojabaghel0604" width="100px;" alt="Pooja Baghel"/><br /><sub><b>Pooja Baghel</b></sub></a></td>
+  </tr>
+</table>
 
 ## Screenshots
 
@@ -107,4 +111,4 @@ Check out our video demo to see Aayu in action:
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is open to all for contributions. We only ask that you give us credit for the work.
