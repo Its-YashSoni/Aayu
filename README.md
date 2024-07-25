@@ -108,8 +108,3 @@ Check out our video demo to see Aayu in action:
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-<style>
-  a {
-    color: #426D51;
-  }
-</style>
