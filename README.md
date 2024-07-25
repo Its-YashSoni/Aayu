@@ -86,9 +86,16 @@ We would like to extend our thanks to the following contributors:
 
 Here are some screenshots of Aayu in action:
 
-![Home Screen](screenshots_and_demo/home_screen.png)
-![Plant Identification](screenshots_and_demo/plant_identification.png)
-![Community Feature](screenshots_and_demo/community_feature.png)
+![Splash Screen](screenshots/s0.jpg)
+![Login Screen](screenshots/s1.jpg)
+![SignUp Screen](screenshots/s2.jpg)
+![Home Screen](screenshots/s3.jpg)
+![Selection Screen](screenshots/s4.jpg)
+![Home Screen Bottom](screenshots/s5.jpg)
+![Drawer Screen](screenshots/s6.jpg)
+![Weather Screen](screenshots/s7.jpg)
+![Featured Plants Details](screenshots/s8.jpg)
+![Classified image details](screenshots/s9.jpg)
 
 ## Video Demo
 
