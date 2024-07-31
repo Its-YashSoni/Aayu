@@ -114,7 +114,10 @@ We would like to extend our thanks to the following contributors:
 
 You can download the Aayu app from the Google Play Store:
 
+<div style="display: flex; flex-wrap: wrap; gap: 30px;">
 <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" width="150px" alt="Google Play Store"/></a>
+<a href='https://indusapp.store/mnqcko3k'><img alt='Get it on Indus Appstore' src='https://docstore.indusappstore.com/public/external/developerdashboard-static/badge-black-background-english.png' width="150px" /></a>
+</div>
 
 ## License
 
