@@ -1,6 +1,6 @@
 # Privacy Policy for Aayu - Medicinal Plant Identification App
 
-**Effective Date:** 10/7/24
+**Effective Date:** 09/02/2024
 
 ## Introduction
 
